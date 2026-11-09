@@ -4,7 +4,7 @@
 
 Base: `ff9fde325f3afe7be556deb28dc89d0bfe28770d`.
 Feature branch: `feat/supplier-data-onboarding`.
-No push, remote PR, merge, deployment, credential rotation or historical migration edit is performed. Pre-existing uncommitted `PROJECT_DEEP_DIVE_PREP.md` is outside this change and must not be staged with it.
+This summary records the supplier-onboarding change and its local verification at implementation time. Current CI and deployment status must be checked separately; the verification below is historical, not a live status report.
 
 ## Changes
 

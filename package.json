@@ -17,10 +17,10 @@
     "test:e2e": "python tools/qa_playwright.py"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "1.20.12",
+    "@opennextjs/cloudflare": "1.20.16",
     "@tanstack/react-query": "5.101.4",
     "lucide-react": "0.468.0",
-    "next": "16.4.2",
+    "next": "16.4.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "4.6.7"
@@ -38,7 +38,7 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.65.0",
     "vitest": "4.1.12",
-    "wrangler": "4.151.1"
+    "wrangler": "4.158.0"
   },
   "overrides": {
     "@node-minify/core": {
