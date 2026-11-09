@@ -1,0 +1,111 @@
+{
+  "recordedAtUtc": "2026-11-06T17:00:40.5448530Z",
+  "sourceSha": "8e5528ab52fc768a97797d1458ed56e3a928b179",
+  "runs": 3,
+  "kind": "repeated isolated correctness and timing baseline",
+  "synthetic": true,
+  "command": "./mvnw.cmd -q -Dtest=VMarketApplicationTest#seededSupplierOnboardingBenchmarkProducesMeasuredImportAndReconciliationEvidence+supplierPreviewMapsAndQuarantinesRowsWithoutAnyBusinessWrites+concurrentSupplierConfirmationsShareOneDurableIdentityAndOneMovement+supplierDatabaseFailureRollsBackChunkAndUsesOnlyTheExistingSafeRestart test",
+  "environment": "Spring Boot application context + MockMvc + disposable Testcontainers PostgreSQL17.6/Redis8.2",
+  "limitations": [
+    "Not a before/after performance comparison.",
+    "Not browser/HTTP-network or production load testing.",
+    "Each run starts a fresh application/container fixture; phase timings exclude process/container startup.",
+    "Four scenarios per run; not the full application suite.",
+    "No real supplier/customer data or external API is used."
+  ],
+  "observations": [
+    {
+      "run": 1,
+      "startedAtUtc": "2026-11-06T16:58:21.6782923Z",
+      "sourceSha": "8e5528ab52fc768a97797d1458ed56e3a928b179",
+      "tests": [
+        "seededSupplierOnboardingBenchmarkProducesMeasuredImportAndReconciliationEvidence",
+        "concurrentSupplierConfirmationsShareOneDurableIdentityAndOneMovement",
+        "supplierPreviewMapsAndQuarantinesRowsWithoutAnyBusinessWrites",
+        "supplierDatabaseFailureRollsBackChunkAndUsesOnlyTheExistingSafeRestart"
+      ],
+      "testsPassed": 4,
+      "testsSkipped": 0,
+      "metrics": {
+        "seed": 20261023,
+        "synthetic": true,
+        "rows": 220,
+        "validRows": 200,
+        "rejectedRows": 20,
+        "sourceSha256": "4bef1892bf589183b8e9b55faba7a2d821d3765b17523317dd5ae546f2eb7e0f",
+        "previewMs": 143.3327,
+        "previewThroughImportMs": 2274.2925,
+        "endToEndThroughReconciliationMs": 3236.2719,
+        "acceptedRowsPerSecondThroughImport": 87.9394361103508,
+        "jobsAfterDuplicate": 1,
+        "movementsAfterDuplicate": 200,
+        "mismatches": 0,
+        "unverifiedStockRows": 0,
+        "environment": "Windows 11 / Java 21 / PG17.6 Redis8.2 Testcontainers",
+        "measuredAt": "2026-11-06T16:59:04.536795200Z"
+      }
+    },
+    {
+      "run": 2,
+      "startedAtUtc": "2026-11-06T16:59:07.5830879Z",
+      "sourceSha": "8e5528ab52fc768a97797d1458ed56e3a928b179",
+      "tests": [
+        "seededSupplierOnboardingBenchmarkProducesMeasuredImportAndReconciliationEvidence",
+        "concurrentSupplierConfirmationsShareOneDurableIdentityAndOneMovement",
+        "supplierPreviewMapsAndQuarantinesRowsWithoutAnyBusinessWrites",
+        "supplierDatabaseFailureRollsBackChunkAndUsesOnlyTheExistingSafeRestart"
+      ],
+      "testsPassed": 4,
+      "testsSkipped": 0,
+      "metrics": {
+        "seed": 20261023,
+        "synthetic": true,
+        "rows": 220,
+        "validRows": 200,
+        "rejectedRows": 20,
+        "sourceSha256": "4bef1892bf589183b8e9b55faba7a2d821d3765b17523317dd5ae546f2eb7e0f",
+        "previewMs": 145.5131,
+        "previewThroughImportMs": 2518.7349,
+        "endToEndThroughReconciliationMs": 3480.9423,
+        "acceptedRowsPerSecondThroughImport": 79.40494253682672,
+        "jobsAfterDuplicate": 1,
+        "movementsAfterDuplicate": 200,
+        "mismatches": 0,
+        "unverifiedStockRows": 0,
+        "environment": "Windows 11 / Java 21 / PG17.6 Redis8.2 Testcontainers",
+        "measuredAt": "2026-11-06T16:59:51.504726100Z"
+      }
+    },
+    {
+      "run": 3,
+      "startedAtUtc": "2026-11-06T16:59:54.5679928Z",
+      "sourceSha": "8e5528ab52fc768a97797d1458ed56e3a928b179",
+      "tests": [
+        "seededSupplierOnboardingBenchmarkProducesMeasuredImportAndReconciliationEvidence",
+        "concurrentSupplierConfirmationsShareOneDurableIdentityAndOneMovement",
+        "supplierPreviewMapsAndQuarantinesRowsWithoutAnyBusinessWrites",
+        "supplierDatabaseFailureRollsBackChunkAndUsesOnlyTheExistingSafeRestart"
+      ],
+      "testsPassed": 4,
+      "testsSkipped": 0,
+      "metrics": {
+        "seed": 20261023,
+        "synthetic": true,
+        "rows": 220,
+        "validRows": 200,
+        "rejectedRows": 20,
+        "sourceSha256": "4bef1892bf589183b8e9b55faba7a2d821d3765b17523317dd5ae546f2eb7e0f",
+        "previewMs": 142.6814,
+        "previewThroughImportMs": 2222.4054,
+        "endToEndThroughReconciliationMs": 3135.7149,
+        "acceptedRowsPerSecondThroughImport": 89.99258191147304,
+        "jobsAfterDuplicate": 1,
+        "movementsAfterDuplicate": 200,
+        "mismatches": 0,
+        "unverifiedStockRows": 0,
+        "environment": "Windows 11 / Java 21 / PG17.6 Redis8.2 Testcontainers",
+        "measuredAt": "2026-11-06T17:00:37.685236600Z"
+      }
+    }
+  ]
+}

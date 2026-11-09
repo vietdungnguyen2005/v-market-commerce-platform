@@ -1,64 +1,50 @@
-# V-Market — Commerce & Supplier Data Onboarding
+# V-Market — Commerce & Supplier Data
 
-A commerce application that helps operators review supplier inventory files, approve valid changes and reconcile the resulting stock—without applying the same file twice.
+An online store with a reviewable supplier-import workflow: validate a file, approve its changes, process it and check the resulting inventory.
 
-[Live storefront](https://v-market.vmarket-vietdung2005.workers.dev/) · [Operations console](https://v-market.vmarket-vietdung2005.workers.dev/ops) · [Measured results](docs/fde/impact-evaluation.md) · [Run locally](docs/developer-guide.md)
+[Live storefront](https://v-market.vmarket-vietdung2005.workers.dev/) · [Operations console](https://v-market.vmarket-vietdung2005.workers.dev/ops) · [Recorded results](docs/evidence/2026-11-09/README.md) · [Run locally](docs/developer-guide.md)
 
 ## Problem & Solution
 
-**Problem:** Supplier data often arrives as spreadsheets or CSV files with different column names, Japanese character encodings and invalid values. Importing a file without review can corrupt stock. Retrying after a connection failure can apply the same update twice, while a stopped import leaves operators unsure what was actually changed.
+**Problem:** Supplier files can contain invalid stock values, unfamiliar columns and Japanese character encodings. Blind imports can apply bad data; repeated submissions or interrupted processing can leave operators unsure whether inventory was updated twice.
 
-**Solution:** V-Market provides a **Preview → Confirm → Import → Reconcile** workflow. An operator selects a versioned supplier format, sees which rows are valid, explicitly approves the original file and checks the final inventory against recorded changes. Invalid rows are separated with reasons instead of silently accepted.
+**Solution:** V-Market provides a **Preview → Confirm → Import → Reconcile** workflow. Operators inspect mapped records and row-level errors before approving changes, then check progress and compare results with recorded inventory movements. Catalog browsing, checkout and private order tracking complete the application.
 
-The same application includes a customer-facing catalog, checkout, order tracking and an operations console. Supplier onboarding is the main engineering case study.
-
-<details>
-<summary>View the supplier preview screenshot</summary>
-
-![Supplier mapping preview showing accepted and rejected input](docs/fde/evidence/supplier-preview-desktop.png)
-
-</details>
+Suppliers and datasets are fictional; this is not a live retailer or a real supplier integration.
 
 ## Engineering
 
-- **Japanese data compatibility:** Strict UTF-8 and CP932 decoding, with versioned mappings from supplier columns to the application's stock format.
-- **Review before change:** Preview does not update inventory. Confirmation is bound to the reviewed file and supplier profile; changed stock or product versions are rejected rather than silently overwritten.
-- **Duplicate protection:** The original file's digital fingerprint prevents a byte-identical upload from creating another import job.
-- **Recoverable processing:** Imports save progress in small committed groups. An interrupted job resumes stored work instead of starting a second inventory update.
-- **Explainable results:** Operators can inspect rejected rows, import progress and reconciliation differences.
-- **Commerce safety:** Server-owned prices, stock locking and retry-safe checkout protect order and inventory consistency.
+- **Feature integration:** Storefront and operator interfaces connect to Java APIs for checkout, file review, import status and reconciliation.
+- **Data validation:** Strict UTF-8/CP932 decoding and versioned mappings produce validated records. Preview does not apply stock changes.
+- **Recoverable processing:** PostgreSQL transactions, file identity and committed import chunks protect against duplicate application and support explicit restart after failures.
+- **Consistency:** Checkout uses server-owned prices and stock locks. Imports check current product/stock versions; reconciliation reports differences rather than silently repairing them.
 
-**Core stack:** Java 21, Spring Boot, Spring Batch, PostgreSQL, Redis, React/Next.js and TypeScript. Docker and GitHub Actions support repeatable delivery.
+**Stack:** Java 21, Spring Boot, Spring Batch, PostgreSQL, Redis, TypeScript, Next.js/React, Docker and GitHub Actions.
 
 ## Impact & Results
 
-**Synthetic local measurements, not production throughput or unit-test counts.** The recorded dataset contains 220 source rows: 200 valid existing catalog items and 20 deliberately invalid numeric rows.
+**Three isolated local runs with the same synthetic 220-row supplier file and real disposable PostgreSQL/Redis.**
 
-| Situation | Measured outcome | Why it matters |
-| --- | --- | --- |
-| Mixed-quality supplier data | **200 rows accepted; 20 rejected** before application | Invalid values are identified rather than applied as stock updates. |
-| Review and process the file | Preview took **51.07 ms**; preview through completed import took **1.196 seconds** | Demonstrates a usable review-to-import path for this specific 220-row sample. |
-| Confirm the identical file again | Still **1 job and 200 inventory movements** | A repeated confirmation does not apply the 200 stock changes twice. |
-| Check the final stock against recorded movements | **0 reconciliation mismatches; 0 unverified stock rows** | Every stock row in this measured scope has comparable reconciliation evidence. |
-| Interrupt an import after 50 of 51 rows are committed | Restart finishes with **51 applied rows, 51 unique movements and 1 job instance** | Progress is recovered without duplicating the first 50 stock updates. |
+| Problem addressed | Verified result in every run | Practical value |
+|---|---|---|
+| Mixed-quality input | **200 valid records accepted; 20 invalid rows rejected** | Bad values are identified before application. |
+| Repeated confirmation | **One import job and 200 inventory movements**, with no extra movements | Retry does not apply the stock changes twice. |
+| Checking applied data | **Zero reconciliation mismatches and zero unverified stock rows** | Effects can be checked against the recorded baseline. |
 
-**Evidence:** [Benchmark data](docs/fde/evidence/benchmark.json) · [Crash-recovery data](docs/fde/evidence/recovery.json) · [Method and limitations](docs/fde/impact-evaluation.md).
+Related local scenarios verified read-only preview, concurrent confirmation and rollback followed by an explicit import restart after an injected database failure. These are results on the defined dataset—not production throughput, an optimization percentage or staff-time savings.
 
-Timing is from **one local run** on Windows 11, Java 21, PostgreSQL 17.6 and Redis 8.2. It excludes environment startup, HTTP/WAN latency and production contention. Recovery used an actual owned Java process restart and a paused disposable database; lease expiry was accelerated for the exercise. There is no measured before/after manual-work baseline, so no staff-time savings or speedup percentage is claimed.
+[Raw results, methodology and reproduction](docs/evidence/2026-11-09/README.md) preserve the measured revision. A separate [historical process-recovery exercise](docs/fde/impact-evaluation.md) records its own fault-injection conditions.
 
 ## Explore the project
 
-- **For the business scenario:** [Supplier onboarding problem](docs/fde/customer-problem.md) · [Demo walkthrough](docs/fde/customer-demo-script.md).
-- **For engineering detail:** [Integration contract](docs/fde/integration-contract.md) · [Architecture](docs/ARCHITECTURE.md).
-- **For reproducibility:** [Acceptance evidence](docs/fde/acceptance-criteria.md) · [Developer guide](docs/developer-guide.md).
-- **For support:** [Operator handoff](docs/fde/operator-handoff.md).
+- [Supplier preview screenshot](docs/fde/evidence/supplier-preview-desktop.png) · [Demo walkthrough](docs/fde/customer-demo-script.md)
+- [Architecture](docs/ARCHITECTURE.md) · [Integration contract](docs/fde/integration-contract.md)
+- [Acceptance criteria](docs/fde/acceptance-criteria.md) · [Operator handoff](docs/fde/operator-handoff.md)
 
-### Demo boundaries
+## Scope & Demo Limits
 
-A personal portfolio project using fictional suppliers and a shared demo store—not a real retailer deployment or a multi-tenant supplier portal. The frontend runs on Cloudflare; the Java backend uses Render, Neon PostgreSQL and Upstash Redis. Free-host startup can delay initial requests. Import/administration requires a provisioned operator account; credentials are not published.
+The importer updates existing catalog items and accepts at most **1,000 data rows per file**. Duplicate-file protection covers original bytes and verified import identity, not every reformatted version of the same business event. Reconciliation is not automatic repair.
 
-The importer updates existing catalog items; it does not create arbitrary products or connect to a real supplier system. Duplicate protection covers identical file bytes, not every differently formatted file representing the same business event.
+The free-hosted backend may cold-start; administration requires a provisioned account. No credentials or real customer data are published. Local measurements do not establish real supplier adoption, revenue or an always-on service guarantee.
 
----
-
-Former repository name: `Project2`. The new name changes the repository address, not the live-demo URL.
+Former repository name: Project2; the live-demo URL is unchanged.
